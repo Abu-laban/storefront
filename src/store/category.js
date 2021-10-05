@@ -1,21 +1,9 @@
+import axios from 'axios';
+
+const api = 'https://run.mocky.io/v3/7c97b507-ab9a-4d07-a374-a98b81ea58cf';
+
 let initialState = {
-    categories: [
-        {
-            name: 'hats',
-            displayName: 'Hats!',
-            description: 'things you put on your head'
-        },
-        {
-            name: 'socks',
-            displayName: 'Socks!',
-            description: 'things you put on your feet'
-        },
-        {
-            name: 'sunglasses',
-            displayName: 'Sunglasses!',
-            description: 'things you put on your nose'
-        },
-    ],
+    categories: [],
     activeCategory: null,
 }
 
@@ -25,11 +13,14 @@ const catReducer = (state = initialState, action) => {
     switch (type) {
         case 'SETCATEGORY':
             let activeCategory = payload;
-            let categories = initialState.categories;
+            let categories = state.categories;
             return { activeCategory, categories };
 
+        case 'GET_CATS':
+            return { categories: payload, activeCategory: initialState.activeCategory };
+
         case 'RESET':
-            return initialState;
+            return { ...state, activeCategory: initialState.activeCategory };
 
         default:
             return state;
@@ -49,4 +40,15 @@ export const reset = () => {
     }
 }
 
+export const getRemoteData = () => async dispatch => {
+    let response = await axios.get(api);
+    dispatch(getAction(response.data))
+}
+
+export const getAction = (data) => {
+    return {
+        type: 'GET_CATS',
+        payload: data
+    }
+}
 export default catReducer;

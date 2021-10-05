@@ -1,9 +1,21 @@
-import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, Typography, makeStyles } from '@material-ui/core';
+import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, makeStyles, Typography } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { getAllProds, setActiveProds } from '../store/product';
-import { addToCart } from '../store/cart';
+import { useEffect } from 'react';
+
+import { getRemoteData, putRemoteData } from '../store/product';
 
 const Products = props => {
+
+    const fetchProducts = (e) => {
+        e && e.preventDefault();
+        props.get();
+    }
+
+    useEffect(() => {
+        fetchProducts();
+        // eslint-disable-next-line
+    }, []);
+
 
     const useStyles = makeStyles({
         root: {
@@ -12,7 +24,6 @@ const Products = props => {
             margin: "auto"
         },
         productGrid: {
-
         },
         card: {
             height: '100%',
@@ -37,7 +48,6 @@ const Products = props => {
                         <Grid item xs={12} sm={6} md={4} lg={3} key={product.name}>
                             <Card variant="outlined" className={classes.card}>
                                 <CardActionArea>
-
                                     <CardMedia
                                         className={classes.media}
                                         image={product.url}
@@ -53,7 +63,6 @@ const Products = props => {
                                     <Button color="primary" onClick={() => props.addToCart(product)}>Add to cart</Button>
                                     <Button color="primary">Details</Button>
                                 </CardActions>
-
                             </Card>
                         </Grid>
                     )
@@ -64,9 +73,12 @@ const Products = props => {
 
 const mapStateToProps = state => ({
     prodReducer: state.prodReducer,
-    catReducer: state.catReducer
+    catReducer: state.catReducer,
 });
 
-const mapDispatchToProps = { getAllProds, setActiveProds, addToCart };
+const mapDispatchToProps = (dispatch) => ({
+    addToCart: (product) => dispatch(putRemoteData(product, true)),
+    get: () => dispatch(getRemoteData())
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Products);
