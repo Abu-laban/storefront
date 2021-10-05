@@ -7,10 +7,17 @@ const cartReducer = (state = initialState, action) => {
 
     switch (type) {
         case 'ADDTOCART':
-            let product = payload;
-            return { cart: [...state.cart, product] }
+            let addProduct = payload;
+            return { cart: [...state.cart, addProduct] }
+
+        case 'REMOVEFROMCART':
+            let removeProduct = payload;
+            console.log(payload);
+            return { cart: state.cart.filter(item => item !== removeProduct) }
+
         case 'CARTRESET':
             return initialState;
+
         default:
             return state;
     }
@@ -19,6 +26,13 @@ const cartReducer = (state = initialState, action) => {
 export const addToCart = (product) => {
     return {
         type: 'ADDTOCART',
+        payload: product
+    }
+}
+
+export const removeFromCart = (product) => {
+    return {
+        type: 'REMOVEFROMCART',
         payload: product
     }
 }
